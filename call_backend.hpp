@@ -2,8 +2,8 @@
 // Created by imper on 3/29/22.
 //
 
-#ifndef CALL_MESSENGER_BACKEND_HPP
-#define CALL_MESSENGER_BACKEND_HPP
+#ifndef MESSENGER_BACKEND_HPP
+#define MESSENGER_BACKEND_HPP
 
 #include <cstring>
 #include <execute-process-linux>
@@ -416,4 +416,4 @@ private:
 	}
 };
 
-#endif //CALL_MESSENGER_BACKEND_HPP
+#endif //MESSENGER_BACKEND_HPP
