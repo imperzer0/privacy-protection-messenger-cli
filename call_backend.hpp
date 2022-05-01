@@ -9,6 +9,7 @@
 #include <execute-process-linux>
 #include <iostream>
 #include <vector>
+#include <list>
 
 #define PLACEHOLDER nullptr
 
