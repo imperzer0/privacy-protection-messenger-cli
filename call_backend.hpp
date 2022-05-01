@@ -9,7 +9,6 @@
 #include <execute-process-linux>
 #include <iostream>
 #include <vector>
-#include <list>
 
 #define PLACEHOLDER nullptr
 
@@ -50,15 +49,12 @@ public:
 			std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 			::close(op[exec::pipe::write]);
 			
-			bool res;
+			auto res = false;
 			rd_pipe(res);
-			::close(op[exec::pipe::read]);
 			if ((began_session = res))
-			{
 				rd_pipe(prikey);
-				return true;
-			}
-			else return false;
+			::close(op[exec::pipe::read]);
+			return res;
 		}
 	}
 	
@@ -85,7 +81,7 @@ public:
 			std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 			::close(op[exec::pipe::write]);
 			
-			bool res;
+			auto res = false;
 			rd_pipe(res);
 			::close(op[exec::pipe::read]);
 			return !(began_session = !res);
@@ -114,7 +110,7 @@ public:
 		std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
 		::close(op[exec::pipe::read]);
 		return res;
@@ -142,7 +138,7 @@ public:
 		std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
 		::close(op[exec::pipe::read]);
 		return res;
@@ -170,7 +166,7 @@ public:
 		std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
 		::close(op[exec::pipe::read]);
 		return res;
@@ -196,9 +192,10 @@ public:
 		std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
-		rd_pipe(display_name);
+		if (res)
+			rd_pipe(display_name);
 		::close(op[exec::pipe::read]);
 		return res;
 	}
@@ -225,9 +222,10 @@ public:
 		std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
-		rd_pipe(online);
+		if (res)
+			rd_pipe(online);
 		::close(op[exec::pipe::read]);
 		return res;
 	}
@@ -254,7 +252,7 @@ public:
 		std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
 		size_t size;
 		rd_pipe(size);
@@ -290,7 +288,7 @@ public:
 		std::clog << "Backend executed with exit code " << exec::wait_for_program(pid) << ".\n";
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
 		size_t size;
 		rd_pipe(size);
@@ -304,7 +302,7 @@ public:
 		return res;
 	}
 	
-	inline bool send_message(std::string user, const std::vector<char>& message)
+	inline bool send_message(std::string user, const std::vector<uint8_t>& message)
 	{
 		::pipe(op);
 		::pipe(ip);
@@ -332,13 +330,13 @@ public:
 		::close(ip[exec::pipe::read]);
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
 		::close(op[exec::pipe::read]);
 		return res;
 	}
 	
-	inline bool query_incoming(std::string& user, std::vector<char>& message)
+	inline bool query_incoming(std::string& user, std::vector<uint8_t>& message)
 	{
 		::pipe(op);
 		::pipe(ip);
@@ -365,10 +363,13 @@ public:
 		::close(ip[exec::pipe::read]);
 		::close(op[exec::pipe::write]);
 		
-		bool res;
+		auto res = false;
 		rd_pipe(res);
-		rd_pipe(user);
-		rd_pipe(message);
+		if (res)
+		{
+			rd_pipe(user);
+			rd_pipe(message);
+		}
 		::close(op[exec::pipe::read]);
 		return res;
 	}
@@ -390,7 +391,7 @@ private:
 	template <template <typename> typename Container, typename T>
 	void rd_pipe(Container<T>& cont)
 	{
-		size_t size;
+		size_t size = 0;
 		::read(op[exec::pipe::read], &size, sizeof size);
 		if (size > 0)
 		{
