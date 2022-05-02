@@ -23,6 +23,12 @@ int main(int argc, char** argv)
 			cbk.register_user(display_name);
 		}
 		
+		display_name += "_Changed";
+		cbk.set_display_name(display_name);
+		
+		password += "+=";
+		cbk.set_password(password);
+		
 		if (!cbk.begin_session())
 			std::cout << "{ERROR} Session was not began!\n";
 		

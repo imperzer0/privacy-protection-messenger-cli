@@ -142,6 +142,8 @@ public:
 		auto res = false;
 		rd_pipe(res);
 		::close(op[exec::pipe::read]);
+		
+		if (res) password = new_password;
 		return res;
 	}
 	
