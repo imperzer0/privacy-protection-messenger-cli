@@ -26,8 +26,8 @@ int main(int argc, char** argv)
 		display_name += "_Changed";
 		cbk.set_display_name(display_name);
 		
-		password += "+=";
-		cbk.set_password(password);
+//		cbk.set_password(password + "+=");
+//		cbk.set_password(password);
 		
 		if (!cbk.begin_session())
 			std::cout << "{ERROR} Session was not began!\n";
@@ -51,15 +51,13 @@ int main(int argc, char** argv)
 		std::cout << "Waiting for response...\n\n";
 		
 		std::vector<uint8_t> response_message;
-		if (cbk.query_incoming(destuser, response_message))
-		{
-			std::cout << "Received message from \"" << destuser << "\":\n";
-			for (auto c: response_message)
-				std::cout << c;
-			std::cout << "\n";
-		}
-		else
+		if (!cbk.query_incoming(destuser, response_message))
 			std::cout << "{ERROR} Failed to receive message.\n";
+		
+		std::cout << "Received message from \"" << destuser << "\":\n";
+		for (auto c: response_message)
+			std::cout << c;
+		std::cout << "\n";
 	}
 	else
 	{
