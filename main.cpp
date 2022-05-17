@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 		else
 			std::cout << "{ERROR} Online check failed.\n";
 		
-		std::string message("Mc Lick is already here!!!");
+		std::string message("Mc Lick is already here!!!<br/>svfdb<br/>svdbg");
 //			std::cout << "\nText: ";
 //			std::getline(std::cin, message);
 		
